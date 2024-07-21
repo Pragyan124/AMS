@@ -25,21 +25,6 @@ class MyApp extends StatelessWidget {
       ),
       home: MyHomePage(),
 
-      // StreamBuilder<User?>(
-      //   stream: FirebaseAuth.instance.authStateChanges(),
-      //   builder: (context, AsyncSnapshot<User?> snapshot) {
-      //     if (snapshot.hasData) {
-      //       return DashboardPage();
-      //     }
-      //     else if (snapshot.connectionState == ConnectionState.waiting) {
-      //       return const Center(
-      //         child: CircularProgressIndicator(),
-      //       );
-      //     }  else {
-      //       return LoginPage();
-      //     }
-      //   },
-      // );
     );
   }
 }

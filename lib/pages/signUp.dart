@@ -121,7 +121,7 @@ class Signup extends StatelessWidget {
             context: context
         );
       },
-      child: const Text("Sign Up"),
+      child: const Text("Sign Up" , style: TextStyle(color:Colors.white)),
     );
   }
 

@@ -1,75 +1,124 @@
+import 'package:ams/pages/history.dart';
 import 'package:flutter/material.dart';
-import 'history.dart'; // Import your attendance calendar page file
+import '../utils/attendance_utils.dart'; // Path to your utility function
+import 'package:intl/intl.dart'; // For date formatting
 
 class AttendancePage extends StatefulWidget {
   @override
-  _AttendanceMarkingPageState createState() => _AttendanceMarkingPageState();
+  _AttendancePageState createState() => _AttendancePageState();
 }
 
-class _AttendanceMarkingPageState extends State<AttendancePage> {
-  String _selectedAttendance = 'Present'; // Default selection
+class _AttendancePageState extends State<AttendancePage> {
+  String _attendanceStatus = 'Loading...'; // Default status while loading
+  DateTime _today = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAttendanceStatus();
+  }
+
+  Future<void> _loadAttendanceStatus() async {
+    try {
+      Map<DateTime, String> records = await loadAttendanceData();
+      setState(() {
+        _attendanceStatus = records[_today] ?? 'No Record'; // Default if no record found
+      });
+    } catch (e) {
+      setState(() {
+        _attendanceStatus = 'Error loading data';
+      });
+      print(e); // Log error for debugging
+    }
+  }
+
+  Color _getStatusColor(String status) {
+    switch (status) {
+      case 'Present':
+        return Colors.green;
+      case 'Absent':
+        return Colors.red;
+      case 'Half Day':
+        return Colors.yellow;
+      case 'Leave':
+        return Colors.pink;
+      default:
+        return Colors.grey;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       appBar: AppBar(
         backgroundColor: Colors.green,
         title: Text(
-          'Mark Attendance',
-          style: TextStyle(color: Colors.white),
+          'Today\'s Attendance',
+          style: TextStyle(color: Colors.white, fontFamily: 'Roboto', fontSize: 24.0),
         ),
       ),
       body: Center(
         child: Padding(
-          padding: EdgeInsets.all(50.0),
+          padding: EdgeInsets.all(20.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                'Mark Your Attendance',
-                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 20.0),
+                decoration: BoxDecoration(
+                  color: Colors.greenAccent.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Column(
+                  children: [
+                    Icon(Icons.calendar_today, size: 100.0, color: Colors.green),
+                    SizedBox(height: 20.0),
+                    Text(
+                      'Attendance Status',
+                      style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold, fontFamily: 'Roboto'),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 20.0),
+                    Text(
+                      'Today: ${DateFormat('yyyy-MM-dd').format(_today)}',
+                      style: TextStyle(fontSize: 18.0, fontFamily: 'Roboto'),
+                    ),
+                    SizedBox(height: 10.0),
+                    Text(
+                      _attendanceStatus,
+                      style: TextStyle(
+                        fontSize: 22.0,
+                        fontWeight: FontWeight.bold,
+                        color: _getStatusColor(_attendanceStatus),
+                        fontFamily: 'Roboto',
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              SizedBox(height: 20.0),
-              // Attendance selection
-              Row(
-                children: [
-                  Text('Select Attendance:'),
-                  SizedBox(width: 10.0),
-                  DropdownButton<String>(
-                    value: _selectedAttendance,
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        _selectedAttendance = newValue!;
-                      });
-                    },
-                    items: <String>['Present', 'Absent', 'Half Day', 'Leave']
-                        .map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                  ),
-                ],
-              ),
-              SizedBox(height: 20.0),
-              // Submit button
+              SizedBox(height: 40.0),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white, backgroundColor: Colors.green, // Text color
+                  padding: EdgeInsets.symmetric(vertical: 15.0),
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.green, // Text color
+                  textStyle: TextStyle(fontSize: 18.0, fontFamily: 'Roboto', fontWeight: FontWeight.bold),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
                 ),
                 onPressed: () {
-                  // Navigate to AttendanceCalendarPage after marking attendance
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => AttendanceCalendarPage(),
+                      builder: (context) => AttendanceCalendarPage(
+                        selectedDate: _today,
+                      ),
                     ),
                   );
                 },
-                child: Text('Submit'),
+                child: Text('Details'),
               ),
             ],
           ),

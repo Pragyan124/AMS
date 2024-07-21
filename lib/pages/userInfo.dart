@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
-import 'dart:io';
+import 'package:image_picker_web/image_picker_web.dart';
+import 'dart:html' as html;
 
 class Userinfo extends StatefulWidget {
   @override
@@ -12,7 +12,7 @@ class _UserInfoPageState extends State<Userinfo> {
   final _formKey = GlobalKey<FormState>();
   String _name = 'Pragyan Borthakur';
   String _email = 'xyz@email.com';
-  XFile? _profileImage;
+  html.File? _profileImage;
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +32,11 @@ class _UserInfoPageState extends State<Userinfo> {
                   child: CircleAvatar(
                     radius: 50,
                     backgroundImage: _profileImage == null
-                        ? AssetImage('assets/avatar_placeholder.png')
-                        : FileImage(File(_profileImage!.path)),
+                        ? AssetImage('assets/images/hey.png')
+                        : NetworkImage(html.Url.createObjectUrl(_profileImage!)) as ImageProvider,
+                    child: _profileImage == null
+                        ? Icon(Icons.add_a_photo, size: 50)
+                        : null,
                   ),
                 ),
               ),
@@ -77,8 +80,7 @@ class _UserInfoPageState extends State<Userinfo> {
   }
 
   Future<void> _pickImage() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    final html.File? image = await ImagePickerWeb.getImageAsFile();
 
     setState(() {
       _profileImage = image;
