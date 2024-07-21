@@ -1,9 +1,18 @@
+import 'package:ams/pages/dashboard.dart';
 import 'package:ams/pages/home.dart';
+import 'package:ams/pages/loginPage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
-  runApp(MyApp());
+void main() async {
+     WidgetsFlutterBinding.ensureInitialized();
+     await Firebase.initializeApp();
+  runApp(MyApp(
+  ));
 }
+
+
 
 class MyApp extends StatelessWidget {
   @override
@@ -14,11 +23,32 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(),
+      home:  MyHomePage(),
+
+      // StreamBuilder<User?>(
+      //   stream: FirebaseAuth.instance.authStateChanges(),
+      //   builder: (context, AsyncSnapshot<User?> snapshot) {
+      //     if (snapshot.hasData) {
+      //       return DashboardPage();
+      //     }
+      //     else if (snapshot.connectionState == ConnectionState.waiting) {
+      //       return const Center(
+      //         child: CircularProgressIndicator(),
+      //       );
+      //     }  else {
+      //       return LoginPage();
+      //     }
+      //   },
+      // );
+
+
+
 
     );
   }
 }
+
+
 
 
 

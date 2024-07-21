@@ -1,10 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'loginPage.dart';
 import 'userInfo.dart';  // Import the UserInfoPage
 import 'attendance.dart';
 
 class DashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green,
@@ -86,7 +90,7 @@ class DashboardPage extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => UserInfo()),
+                  MaterialPageRoute(builder: (context) => Userinfo()),
                 );
               },
               child: Card(
@@ -113,7 +117,7 @@ class DashboardPage extends StatelessWidget {
                           // Handle profile update action
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => UserInfo()),
+                            MaterialPageRoute(builder: (context) => Userinfo()),
                           );
                         },
                       ),

@@ -1,5 +1,8 @@
+import 'package:ams/pages/dashboard.dart';
 import 'package:ams/pages/loginPage.dart';
 import 'package:ams/pages/signUp.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 
@@ -15,27 +18,24 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  var Signin = true;
+
 
 
   @override
   void initState() {
     super.initState();
     Future.delayed(Duration(seconds: 1 ,milliseconds: 200), () {
-      if(Signin) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => LoginPage()),
-        );
-      }else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => Signup()),
-        );
-      }
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()),
+      );
+
     });
   }
   Widget build(BuildContext context) {
+
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
@@ -57,11 +57,11 @@ class _MyHomePageState extends State<MyHomePage> {
             alignment: Alignment.bottomCenter,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Image.asset('assets/images/checklist.png', height: 500.0 ),
+              child: Image.asset('assets/images/checklist.png', height: 500.0,
             ),
-          ),
-        ],
-      ),
+),
+       ),
+],    ),
     );
   }
 }

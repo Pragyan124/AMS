@@ -3,12 +3,12 @@ import 'package:image_picker/image_picker.dart';
 
 import 'dart:io';
 
-class UserInfo extends StatefulWidget {
+class Userinfo extends StatefulWidget {
   @override
   _UserInfoPageState createState() => _UserInfoPageState();
 }
 
-class _UserInfoPageState extends State<UserInfo> {
+class _UserInfoPageState extends State<Userinfo> {
   final _formKey = GlobalKey<FormState>();
   String _name = 'Pragyan Borthakur';
   String _email = 'xyz@email.com';
