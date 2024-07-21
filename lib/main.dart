@@ -1,3 +1,4 @@
+import 'package:ams/firebase_options.dart';
 import 'package:ams/pages/dashboard.dart';
 import 'package:ams/pages/home.dart';
 import 'package:ams/pages/loginPage.dart';
@@ -6,13 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
-     WidgetsFlutterBinding.ensureInitialized();
-     await Firebase.initializeApp();
-  runApp(MyApp(
-  ));
+  await WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(MyApp());
 }
-
-
 
 class MyApp extends StatelessWidget {
   @override
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home:  MyHomePage(),
+      home: MyHomePage(),
 
       // StreamBuilder<User?>(
       //   stream: FirebaseAuth.instance.authStateChanges(),
@@ -40,17 +40,6 @@ class MyApp extends StatelessWidget {
       //     }
       //   },
       // );
-
-
-
-
     );
   }
 }
-
-
-
-
-
-
-

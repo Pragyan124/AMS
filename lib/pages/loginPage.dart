@@ -67,15 +67,17 @@ class _LoginPageState extends State<LoginPage> {
                 child: Padding(
                   padding: const EdgeInsets.only(top: 16.0),
                   child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(Colors.blueAccent),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blueAccent,
                     ),
                     onPressed: () async {
-                      if (emailController.text.isNotEmpty && passwordController.text.length > 6) {
+                      if (emailController.text.isNotEmpty &&
+                          passwordController.text.length > 6) {
                         await _login();
                       } else {
                         setState(() {
-                          _errorMessage = 'Email is empty or password is invalid';
+                          _errorMessage =
+                              'Email is empty or password is invalid';
                         });
                       }
                     },
@@ -120,6 +122,10 @@ class _LoginPageState extends State<LoginPage> {
         email: emailController.text,
         password: passwordController.text,
       );
+      if (userCredential.user == null) {
+        print('Login failed');
+        return;
+      }
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => DashboardPage()),
@@ -130,6 +136,8 @@ class _LoginPageState extends State<LoginPage> {
           _errorMessage = 'No user found for that email.';
         } else if (e.code == 'wrong-password') {
           _errorMessage = 'Wrong password provided.';
+        } else if (e.code == 'invalid-credential') {
+          _errorMessage = 'user not found';
         } else {
           _errorMessage = 'Something went wrong. Please try again.';
         }
