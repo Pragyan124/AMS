@@ -23,7 +23,9 @@ class _AttendancePageState extends State<AttendancePage> {
       Map<DateTime, String> records = await loadAttendanceData();
       print("Loaded records: $records"); // Debug print
       setState(() {
-        _attendanceStatus = records[_today] ?? 'No record'; // Default if no record found
+        _attendanceStatus =
+            records[DateTime(_today.year, _today.month, _today.day)] ??
+                'No record'; // Default if no record found
       });
     } catch (e) {
       setState(() {
@@ -42,7 +44,6 @@ class _AttendancePageState extends State<AttendancePage> {
 
       default:
         return Colors.grey;
-      
     }
   }
 
@@ -53,7 +54,8 @@ class _AttendancePageState extends State<AttendancePage> {
         backgroundColor: Colors.green,
         title: Text(
           'Today\'s Attendance',
-          style: TextStyle(color: Colors.white, fontFamily: 'Roboto', fontSize: 24.0),
+          style: TextStyle(
+              color: Colors.white, fontFamily: 'Roboto', fontSize: 24.0),
         ),
       ),
       body: Center(
@@ -71,11 +73,15 @@ class _AttendancePageState extends State<AttendancePage> {
                 ),
                 child: Column(
                   children: [
-                    Icon(Icons.calendar_today, size: 100.0, color: Colors.green),
+                    Icon(Icons.calendar_today,
+                        size: 100.0, color: Colors.green),
                     SizedBox(height: 20.0),
                     Text(
                       'Attendance Status',
-                      style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold, fontFamily: 'Roboto'),
+                      style: TextStyle(
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Roboto'),
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 20.0),
@@ -102,7 +108,10 @@ class _AttendancePageState extends State<AttendancePage> {
                   padding: EdgeInsets.symmetric(vertical: 15.0),
                   foregroundColor: Colors.white,
                   backgroundColor: Colors.green, // Text color
-                  textStyle: TextStyle(fontSize: 18.0, fontFamily: 'Roboto', fontWeight: FontWeight.bold),
+                  textStyle: TextStyle(
+                      fontSize: 18.0,
+                      fontFamily: 'Roboto',
+                      fontWeight: FontWeight.bold),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),

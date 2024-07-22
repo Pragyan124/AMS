@@ -1,8 +1,7 @@
-import 'package:ams/pages/loginPage.dart.';
+import 'package:ams/pages/loginPage.dart';
 import 'package:ams/auth_service.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-
 
 class Signup extends StatelessWidget {
   Signup({super.key});
@@ -15,7 +14,6 @@ class Signup extends StatelessWidget {
     return Scaffold(
         backgroundColor: Colors.white,
         resizeToAvoidBottomInset: true,
-
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -23,28 +21,30 @@ class Signup extends StatelessWidget {
         ),
         body: SafeArea(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             child: Column(
               children: [
                 Center(
                   child: Text(
                     'Register Account',
-
-                    ),
                   ),
-
-                const SizedBox(height: 80,),
+                ),
+                const SizedBox(
+                  height: 80,
+                ),
                 _emailAddress(),
-                const SizedBox(height: 20,),
+                const SizedBox(
+                  height: 20,
+                ),
                 _password(),
-                const SizedBox(height: 50,),
+                const SizedBox(
+                  height: 50,
+                ),
                 _signup(context),
               ],
             ),
-
           ),
-        )
-    );
+        ));
   }
 
   Widget _emailAddress() {
@@ -54,10 +54,10 @@ class Signup extends StatelessWidget {
       children: [
         Text(
           'Email Address',
-
-          ),
-
-        const SizedBox(height: 16,),
+        ),
+        const SizedBox(
+          height: 16,
+        ),
         TextField(
           controller: _emailController,
           decoration: InputDecoration(
@@ -66,14 +66,11 @@ class Signup extends StatelessWidget {
               hintStyle: const TextStyle(
                   color: Color(0xff6A6A6A),
                   fontWeight: FontWeight.normal,
-                  fontSize: 14
-              ),
-              fillColor: const Color(0xffF7F7F9) ,
+                  fontSize: 14),
+              fillColor: const Color(0xffF7F7F9),
               border: OutlineInputBorder(
                   borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.circular(14)
-              )
-          ),
+                  borderRadius: BorderRadius.circular(14))),
         )
       ],
     );
@@ -84,21 +81,19 @@ class Signup extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-            'Password'),
-
-        const SizedBox(height: 16,),
+        Text('Password'),
+        const SizedBox(
+          height: 16,
+        ),
         TextField(
           controller: _passwordController,
           obscureText: true,
           decoration: InputDecoration(
               filled: true,
-              fillColor: const Color(0xffF7F7F9) ,
+              fillColor: const Color(0xffF7F7F9),
               border: OutlineInputBorder(
                   borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.circular(14)
-              )
-          ),
+                  borderRadius: BorderRadius.circular(14))),
         )
       ],
     );
@@ -118,12 +113,9 @@ class Signup extends StatelessWidget {
         await AuthService().signup(
             email: _emailController.text,
             password: _passwordController.text,
-            context: context
-        );
+            context: context);
       },
-      child: const Text("Sign Up" , style: TextStyle(color:Colors.white)),
+      child: const Text("Sign Up", style: TextStyle(color: Colors.white)),
     );
   }
-
-
 }

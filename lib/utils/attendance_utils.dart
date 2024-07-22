@@ -14,10 +14,11 @@ Future<Map<DateTime, String>> loadAttendanceData() async {
     print("Table: $table"); // Print table name
     var rows = excel.tables[table]?.rows;
     if (rows != null) {
-      for (var row in rows.skip(1)) { // Skip header row
+      for (var row in rows.skip(1)) {
+        // Skip header row
         try {
           // Extract the status from each row
-          String status = row[1]?.toString() ?? 'No Record';
+          String status = row[1]?.value.toString() ?? 'No Record';
           //print(status);
 
           // Optional: Filter out unwanted data if necessary
@@ -40,9 +41,8 @@ Future<Map<DateTime, String>> loadAttendanceData() async {
           }
 
           // Ensure only the date part is used, time set to midnight
-        
 
-          attendanceRecords[date] = status;
+          attendanceRecords[DateTime(date.year, date.month, date.day)] = status;
           print("Loaded: $date -> $status"); // Print loaded data
         } catch (e) {
           print("Error parsing row: $row, error: $e");
