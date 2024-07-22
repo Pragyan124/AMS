@@ -33,7 +33,8 @@ class _AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
     }
   }
 
-  Map<String, Map<String, String>> _groupRecordsByMonth(Map<DateTime, String> records) {
+  Map<String, Map<String, String>> _groupRecordsByMonth(
+      Map<DateTime, String> records) {
     Map<String, Map<String, String>> groupedRecords = {};
 
     records.forEach((date, status) {
@@ -52,7 +53,8 @@ class _AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
   }
 
   String _extractFirstParameter(String dataString) {
-    String trimmedString = dataString.replaceFirst('Data(', '').replaceFirst(')', '');
+    String trimmedString =
+        dataString.replaceFirst('Data(', '').replaceFirst(')', '');
     List<String> parts = trimmedString.split(',');
     return parts.isNotEmpty ? parts[0].trim() : '';
   }
@@ -116,11 +118,13 @@ class _AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
                   DateFormat('MM').parse(monthYear).month,
                 ),
                 (index) {
-                  String day = (index + 1).toString().padLeft(2, '0');
-                  String status = _attendanceRecordsByMonth[monthYear]?[day] ?? 'No Record';
+                  String day = (index + 1).toString();
+                  String status =
+                      _attendanceRecordsByMonth[monthYear]?[day] ?? 'No Record';
 
                   return ListTile(
-                    title: Text('Day: $day - Status: $status', style: TextStyle(fontSize: 16.0)),
+                    title: Text('Day: $day - Status: $status',
+                        style: TextStyle(fontSize: 16.0)),
                     trailing: Icon(
                       status == 'Present'
                           ? Icons.check_circle

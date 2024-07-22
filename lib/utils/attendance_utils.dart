@@ -25,19 +25,12 @@ Future<Map<DateTime, String>> loadAttendanceData() async {
           if (status.isEmpty) status = 'No Record';
 
           DateTime date;
-          if (row[0] is String) {
-            // Assuming the date is in long date format
-            try {
-              date = DateFormat('MMMM d, yyyy').parse(row[0] as String);
-            } catch (e) {
-              date = DateTime.now(); // Fallback if parsing fails
-            }
-          } else if (row[0] is DateTime) {
-            date = row[0] as DateTime;
-          } else if (row[0] is int) {
-            date = DateTime.fromMillisecondsSinceEpoch(row[0] as int);
-          } else {
-            date = DateTime.tryParse(row[0].toString()) ?? DateTime.now();
+          // Assuming the date is in long date format
+          try {
+            date =
+                DateFormat('yyyy-MM-dd').parse(row[0]?.value.toString() ?? "");
+          } catch (e) {
+            date = DateTime.now(); // Fallback if parsing fails
           }
 
           // Ensure only the date part is used, time set to midnight
