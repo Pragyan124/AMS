@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-
 import 'package:excel/excel.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
@@ -16,8 +15,20 @@ Future<Map<DateTime, String>> loadAttendanceData() async {
     if (rows != null) {
       for (var row in rows.skip(1)) { // Skip header row
         try {
-          DateTime date = DateTime.parse(row[0] as String);
-          String status = row[1] as String;
+          print("Row data types: ${row[0]?.runtimeType}, ${row[1]?.runtimeType}"); // Debug data types
+
+          DateTime date;
+          if (row[0] is String) {
+            date = DateTime.tryParse(row[0] as String) ?? DateTime.now();
+          } else if (row[0] is DateTime) {
+            date = row[0] as DateTime;
+          } else if (row[0] is int) {
+            date = DateTime.fromMillisecondsSinceEpoch(row[0] as int);
+          } else {
+            date = DateTime.tryParse(row[0].toString()) ?? DateTime.now();
+          }
+
+          String status = row[1]?.toString() ?? 'Unknown';
           attendanceRecords[date] = status;
           print("Loaded: $date -> $status"); // Print loaded data
         } catch (e) {

@@ -24,8 +24,10 @@ class _AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
 
   Future<void> _loadAttendanceRecords() async {
     try {
-      _attendanceRecords = await loadAttendanceData();
-      setState(() {});
+      Map<DateTime, String> records = await loadAttendanceData();
+      setState(() {
+        _attendanceRecords = records;
+      });
     } catch (e) {
       print('Error loading attendance data: $e');
     }
@@ -65,14 +67,14 @@ class _AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
         onDaySelected: (selectedDay, focusedDay) {
           setState(() {
             _focusedDay = focusedDay;
-            _calendarFormat = CalendarFormat.month;
+            // Update the state if needed based on the selected day
           });
         },
         calendarBuilders: CalendarBuilders(
           markerBuilder: (context, date, events) {
-            if (_attendanceRecords.containsKey(date)) {
-              final status = _attendanceRecords[date];
-              Color color = _getStatusColor(status ?? 'No Record');
+            final status = _attendanceRecords[date];
+            if (status != null) {
+              Color color = _getStatusColor(status);
               return Container(
                 margin: const EdgeInsets.all(4.0),
                 width: 8.0,

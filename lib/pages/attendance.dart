@@ -21,6 +21,7 @@ class _AttendancePageState extends State<AttendancePage> {
   Future<void> _loadAttendanceStatus() async {
     try {
       Map<DateTime, String> records = await loadAttendanceData();
+      print("Loaded records: $records"); // Debug print
       setState(() {
         _attendanceStatus = records[_today] ?? 'No Record'; // Default if no record found
       });
@@ -28,7 +29,7 @@ class _AttendancePageState extends State<AttendancePage> {
       setState(() {
         _attendanceStatus = 'Error loading data';
       });
-      print(e); // Log error for debugging
+      print("Error loading data: $e"); // Log error for debugging
     }
   }
 
