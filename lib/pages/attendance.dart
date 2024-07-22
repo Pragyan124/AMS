@@ -23,7 +23,7 @@ class _AttendancePageState extends State<AttendancePage> {
       Map<DateTime, String> records = await loadAttendanceData();
       print("Loaded records: $records"); // Debug print
       setState(() {
-        _attendanceStatus = records[_today] ?? 'Present'; // Default if no record found
+        _attendanceStatus = records[_today] ?? 'No record'; // Default if no record found
       });
     } catch (e) {
       setState(() {
