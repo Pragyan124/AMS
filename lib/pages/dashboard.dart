@@ -1,14 +1,35 @@
+import 'dart:io';
+import 'dart:html' as html;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'loginPage.dart';
 import 'userInfo.dart';  // Import the UserInfoPage
 import 'attendance.dart';
 
-class DashboardPage extends StatelessWidget {
+class DashboardPage extends StatefulWidget {
+  @override
+  _DashboardPageState createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> {
+  String _name = 'Pragyan Borthakur';
+  String _email = 'xyz@email.com';
+  ImageProvider _profileImage = AssetImage('assets/images/hey.png');
+
+  void _updateUserInfo(String name, String email, html.File? profileImage) {
+    setState(() {
+      _name = name;
+      _email = email;
+      if (profileImage != null) {
+        _profileImage = NetworkImage(html.Url.createObjectUrl(profileImage));
+      } else {
+        _profileImage = AssetImage('assets/images/hey.png');
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green,
@@ -90,7 +111,9 @@ class DashboardPage extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Userinfo()),
+                  MaterialPageRoute(
+                    builder: (context) => Userinfo(onUpdate: _updateUserInfo),
+                  ),
                 );
               },
               child: Card(
@@ -108,16 +131,17 @@ class DashboardPage extends StatelessWidget {
                       // Example user information and profile update
                       ListTile(
                         leading: CircleAvatar(
-                          backgroundImage: AssetImage('assets/images/hey.png'), // Placeholder image
+                          backgroundImage: _profileImage,
                         ),
-                        title: Text('Pragyan Borthakur'),
-                        subtitle: Text('xyz@email.com'),
+                        title: Text(_name),
+                        subtitle: Text(_email),
                         trailing: Icon(Icons.edit),
                         onTap: () {
-                          // Handle profile update action
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => Userinfo()),
+                            MaterialPageRoute(
+                              builder: (context) => Userinfo(onUpdate: _updateUserInfo),
+                            ),
                           );
                         },
                       ),

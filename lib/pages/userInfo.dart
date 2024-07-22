@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:image_picker_web/image_picker_web.dart';
 import 'dart:html' as html;
 
 class Userinfo extends StatefulWidget {
+  final Function(String name, String email, html.File? profileImage) onUpdate;
+
+  Userinfo({required this.onUpdate});
+
   @override
   _UserInfoPageState createState() => _UserInfoPageState();
 }
@@ -32,7 +35,7 @@ class _UserInfoPageState extends State<Userinfo> {
                   child: CircleAvatar(
                     radius: 50,
                     backgroundImage: _profileImage == null
-                        ? AssetImage('assets/images/hey.png')
+                        ? AssetImage('assets/images/hey.png') as ImageProvider
                         : NetworkImage(html.Url.createObjectUrl(_profileImage!)) as ImageProvider,
                     child: _profileImage == null
                         ? Icon(Icons.add_a_photo, size: 50)
@@ -90,10 +93,8 @@ class _UserInfoPageState extends State<Userinfo> {
   void _saveForm() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      // Save user info to backend or local storage
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('User information updated')),
-      );
+      widget.onUpdate(_name, _email, _profileImage); // Call the callback with updated data
+      Navigator.pop(context); // Go back to the previous screen
     }
   }
 }
