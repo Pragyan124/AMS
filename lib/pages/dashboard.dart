@@ -62,15 +62,11 @@ class _DashboardPageState extends State<DashboardPage> {
                       SizedBox(height: 10.0),
                       // Example attendance records
                       ListTile(
-                        title: Text('Attendance on 2024-07-17'),
+                        title: Text('Attendance on 2024-07-22'),
                         subtitle: Text('Present'),
                         trailing: Icon(Icons.check_circle, color: Colors.green),
                       ),
-                      ListTile(
-                        title: Text('Attendance on 2024-07-16'),
-                        subtitle: Text('Absent'),
-                        trailing: Icon(Icons.cancel, color: Colors.red),
-                      ),
+                     
                     ],
                   ),
                 ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:table_calendar/table_calendar.dart';
 import '../utils/attendance_utils.dart'; // Ensure this is the correct path
+import 'package:intl/intl.dart'; // For date formatting
 
 class AttendanceCalendarPage extends StatefulWidget {
   final DateTime selectedDate;
@@ -12,9 +12,8 @@ class AttendanceCalendarPage extends StatefulWidget {
 }
 
 class _AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
-  CalendarFormat _calendarFormat = CalendarFormat.month;
-  DateTime _focusedDay = DateTime.now();
-  Map<DateTime, String> _attendanceRecords = {};
+  Map<String, Map<String, String>> _attendanceRecordsByMonth = {};
+  String _dateRangeMessage = '';
 
   @override
   void initState() {
@@ -26,11 +25,54 @@ class _AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
     try {
       Map<DateTime, String> records = await loadAttendanceData();
       setState(() {
-        _attendanceRecords = records;
+        _attendanceRecordsByMonth = _groupRecordsByMonth(records);
+        _dateRangeMessage = _getDateRangeMessage(records);
       });
     } catch (e) {
       print('Error loading attendance data: $e');
     }
+  }
+
+  Map<String, Map<String, String>> _groupRecordsByMonth(Map<DateTime, String> records) {
+    Map<String, Map<String, String>> groupedRecords = {};
+
+    records.forEach((date, status) {
+      String monthYear = DateFormat('yyyy-MM').format(date);
+      String day = DateFormat('d').format(date);
+      String truncatedStatus = _extractFirstParameter(status);
+
+      if (groupedRecords.containsKey(monthYear)) {
+        groupedRecords[monthYear]![day] = truncatedStatus;
+      } else {
+        groupedRecords[monthYear] = {day: truncatedStatus};
+      }
+    });
+
+    return groupedRecords;
+  }
+
+  String _extractFirstParameter(String dataString) {
+    String trimmedString = dataString.replaceFirst('Data(', '').replaceFirst(')', '');
+    List<String> parts = trimmedString.split(',');
+    return parts.isNotEmpty ? parts[0].trim() : '';
+  }
+
+  String _getDateRangeMessage(Map<DateTime, String> records) {
+    if (records.isEmpty) {
+      return 'No records available for this month.';
+    }
+
+    DateTime minDate = records.keys.reduce((a, b) => a.isBefore(b) ? a : b);
+    DateTime maxDate = records.keys.reduce((a, b) => a.isAfter(b) ? a : b);
+
+    String startDate = DateFormat('d MMM yyyy').format(minDate);
+    String endDate = DateFormat('d MMM yyyy').format(maxDate);
+
+    return 'Records available from $startDate to $endDate.';
+  }
+
+  int getDaysInMonth(int year, int month) {
+    return DateTime(year, month + 1, 0).day;
   }
 
   Color _getStatusColor(String status) {
@@ -39,10 +81,6 @@ class _AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
         return Colors.green;
       case 'Absent':
         return Colors.red;
-      case 'Half Day':
-        return Colors.yellow;
-      case 'Leave':
-        return Colors.pink;
       default:
         return Colors.grey;
     }
@@ -54,40 +92,51 @@ class _AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
       appBar: AppBar(
         backgroundColor: Colors.green,
         title: Text(
-          'Attendance Calendar',
+          'Attendance Records',
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: TableCalendar(
-        firstDay: DateTime.utc(2020, 10, 16),
-        lastDay: DateTime.utc(2030, 3, 14),
-        focusedDay: _focusedDay,
-        calendarFormat: _calendarFormat,
-        selectedDayPredicate: (day) => isSameDay(widget.selectedDate, day),
-        onDaySelected: (selectedDay, focusedDay) {
-          setState(() {
-            _focusedDay = focusedDay;
-            // Update the state if needed based on the selected day
-          });
-        },
-        calendarBuilders: CalendarBuilders(
-          markerBuilder: (context, date, events) {
-            final status = _attendanceRecords[date];
-            if (status != null) {
-              Color color = _getStatusColor(status);
-              return Container(
-                margin: const EdgeInsets.all(4.0),
-                width: 8.0,
-                height: 8.0,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: color,
+      body: ListView(
+        padding: EdgeInsets.all(16.0),
+        children: [
+          Text(
+            _dateRangeMessage,
+            style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 16.0),
+          ..._attendanceRecordsByMonth.keys.map((monthYear) {
+            return ExpansionTile(
+              title: Text(
+                'Month: $monthYear',
+                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+              ),
+              children: List.generate(
+                getDaysInMonth(
+                  DateFormat('yyyy').parse(monthYear).year,
+                  DateFormat('MM').parse(monthYear).month,
                 ),
-              );
-            }
-            return null;
-          },
-        ),
+                (index) {
+                  String day = (index + 1).toString().padLeft(2, '0');
+                  String status = _attendanceRecordsByMonth[monthYear]?[day] ?? 'No Record';
+
+                  return ListTile(
+                    title: Text('Day: $day - Status: $status', style: TextStyle(fontSize: 16.0)),
+                    trailing: Icon(
+                      status == 'Present'
+                          ? Icons.check_circle
+                          : (status == 'Absent'
+                              ? Icons.cancel
+                              : (status == 'Half Day'
+                                  ? Icons.access_time
+                                  : Icons.beach_access)),
+                      color: _getStatusColor(status),
+                    ),
+                  );
+                },
+              ),
+            );
+          }).toList(),
+        ],
       ),
     );
   }

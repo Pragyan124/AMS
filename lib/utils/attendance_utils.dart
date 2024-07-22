@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:excel/excel.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:intl/intl.dart';
 
 Future<Map<DateTime, String>> loadAttendanceData() async {
   final ByteData data = await rootBundle.load('assets/attendance.xlsx');
@@ -15,11 +16,21 @@ Future<Map<DateTime, String>> loadAttendanceData() async {
     if (rows != null) {
       for (var row in rows.skip(1)) { // Skip header row
         try {
-          print("Row data types: ${row[0]?.runtimeType}, ${row[1]?.runtimeType}"); // Debug data types
+          // Extract the status from each row
+          String status = row[1]?.toString() ?? 'No Record';
+          //print(status);
+
+          // Optional: Filter out unwanted data if necessary
+          if (status.isEmpty) status = 'No Record';
 
           DateTime date;
           if (row[0] is String) {
-            date = DateTime.tryParse(row[0] as String) ?? DateTime.now();
+            // Assuming the date is in long date format
+            try {
+              date = DateFormat('MMMM d, yyyy').parse(row[0] as String);
+            } catch (e) {
+              date = DateTime.now(); // Fallback if parsing fails
+            }
           } else if (row[0] is DateTime) {
             date = row[0] as DateTime;
           } else if (row[0] is int) {
@@ -28,7 +39,9 @@ Future<Map<DateTime, String>> loadAttendanceData() async {
             date = DateTime.tryParse(row[0].toString()) ?? DateTime.now();
           }
 
-          String status = row[1]?.toString() ?? 'Unknown';
+          // Ensure only the date part is used, time set to midnight
+        
+
           attendanceRecords[date] = status;
           print("Loaded: $date -> $status"); // Print loaded data
         } catch (e) {
